@@ -85,10 +85,11 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_LISTENERS: INSIDE://kafka:9093,OUTSIDE://0.0.0.0:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFKA_CREATE_TOPICS: "sales_stream:1:1"
+      KAFKA_CREATE_TOPICS: "clientes_stream:1:1,menus_stream:1:1,reservas_stream:1:1"
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./init_topics.sh
     depends_on:
       - zookeeper
 
@@ -106,8 +107,8 @@ services:
     environment:
       - DEBUG=${DEBUG:-0}
     volumes:
-      - ./localstackVolume:/var/lib/localstack
-      - /var/run/docker.sock:/var/run/docker.sock
+      - "./localstackVolume:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
   mongodb:
     image: mongo:latest
     container_name: mongodb

@@ -1,5 +1,4 @@
 import boto3
-import argparse
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
 
@@ -22,12 +21,3 @@ def crear_bucket(nombre_bucket,region=None):
     except Exception as e:
         print(f"Ocurrió un error al crear el bucket: {e}")
 
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Crear un bucket en S3.")
-    parser.add_argument("nombre_bucket", type=str, help="El nombre del bucket a crear.")
-    parser.add_argument("--region", type=str, default=None, help="La región de AWS donde se creará el bucket.")
-
-    args = parser.parse_args()
-
-    crear_bucket(args.nombre_bucket, args.region)
