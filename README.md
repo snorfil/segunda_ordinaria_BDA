@@ -7,3 +7,5 @@
   - /opt/kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092
 
 
+### Con el siguiente comando cambiando el --topic se vuelve consumidor para verificar el productor 
+kafka-console-consumer --bootstrap-server localhost:9092 --topic clientes_stream --from-beginning

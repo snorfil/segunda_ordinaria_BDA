@@ -6,7 +6,7 @@ def consumir_datos_de_kafka():
     # Crear una sesión de Spark
     spark = SparkSession.builder \
         .appName("KafkaMongoConsumer") \
-        .config("spark.sql.shuffle.partitions", "4") \
+        .config("spark.sql.shuffle.partitions", "2") \
         .getOrCreate()
 
     # Definir el esquema de los datos
@@ -20,7 +20,7 @@ def consumir_datos_de_kafka():
     # Leer los datos de Kafka
     df_kafka = spark.readStream \
         .format("kafka") \
-        .option("kafka.bootstrap.servers", "kafka:9092") \
+        .option("kafka.bootstrap.servers", "localhost:9092") \
         .option("subscribe", "clientes_stream") \
         .option("startingOffsets", "earliest") \
         .load()
