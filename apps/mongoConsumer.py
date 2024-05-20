@@ -1,13 +1,28 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import from_json, col
-from pyspark.sql.types import StructType, StructField, StringType
+from pyspark.sql.types import StructType, StringType, StructField
+
 
 def consumir_datos_de_kafka():
-    # Crear una sesión de Spark
+    aws_access_key_id = 'test'
+    aws_secret_access_key = 'test'
+
     spark = SparkSession.builder \
-        .appName("KafkaMongoConsumer") \
-        .config("spark.sql.shuffle.partitions", "2") \
+        .appName("Streaming from Kafka") \
+        .config("spark.streaming.stopGracefullyOnShutdown", True) \
+        .config("spark.sql.shuffle.partitions", 4) \
+        .config("spark.hadoop.fs.s3a.endpoint", "http://spark-localstack-1:4566") \
+        .config("spark.hadoop.fs.s3a.access.key", aws_access_key_id) \
+        .config("spark.hadoop.fs.s3a.secret.key", aws_secret_access_key) \
+        .config("spark.jars.packages",
+                "org.apache.spark:spark-hadoop-cloud_2.13:3.5.1,software.amazon.awssdk:s3:2.25.11,org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1") \
+        .config("spark.hadoop.fs.s3a.path.style.access", "true") \
+        .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
+        .config("spark.driver.extraClassPath", "/opt/spark/jars/s3-2.25.11.jar") \
+        .config("spark.executor.extraClassPath", "/opt/spark/jars/s3-2.25.11.jar") \
+        .master("spark://spark-master:7077") \
         .getOrCreate()
+    # Crear una sesión de Spark
 
     # Definir el esquema de los datos
     esquema = StructType([
@@ -20,7 +35,7 @@ def consumir_datos_de_kafka():
     # Leer los datos de Kafka
     df_kafka = spark.readStream \
         .format("kafka") \
-        .option("kafka.bootstrap.servers", "localhost:9092") \
+        .option("kafka.bootstrap.servers", "kafka:9092") \
         .option("subscribe", "clientes_stream") \
         .option("startingOffsets", "earliest") \
         .load()
@@ -30,11 +45,12 @@ def consumir_datos_de_kafka():
     df_datos = df_valores.select(from_json(col("value"), esquema).alias("data")).select("data.*")
 
     # Procesar los datos (aquí puedes agregar transformaciones adicionales)
-    df_datos.writeStream \
+    query = df_datos.writeStream \
         .format("console") \
         .outputMode("append") \
-        .start() \
-        .awaitTermination()
+        .start()
+
+    query.awaitTermination()
 
 if __name__ == "__main__":
     consumir_datos_de_kafka()
