@@ -114,10 +114,10 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongodb_data:/data/db
+      - mongodb_volumen:/data/db
 volumes:
   localstackVolume: {}
   postgres_data: {}
   neo4jVolume: {}
-  mongodb_data: {}
+  mongodb_volumen: {}
 

@@ -9,7 +9,7 @@ def cargar_datos_a_s3(bucket_name):
     # Crear una sesión de Spark
     spark = SparkSession.builder \
         .appName("SPARK S3") \
-        .config("spark.hadoop.fs.s3a.endpoint", "http://tema5-localstack-1:4566") \
+        .config("spark.hadoop.fs.s3a.endpoint", "http://localstack:4566") \
         .config("spark.hadoop.fs.s3a.access.key", aws_access_key_id) \
         .config("spark.hadoop.fs.s3a.secret.key", aws_secret_access_key) \
         .config("spark.sql.shuffle.partitions", "4") \
