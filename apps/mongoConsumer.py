@@ -5,13 +5,17 @@ from pyspark.sql.types import StructType, StringType, StructField
 def consumir_datos_de_kafka():
 
 
+    # spark = SparkSession.builder \
+    #     .appName("mongo consumer") \
+    #     .config("spark.streaming.stopGracefullyOnShutdown", "true") \
+    #     .config("spark.sql.shuffle.partitions", "4") \
+    #     .config("spark.driver.extraClassPath", "/opt/spark-apps/drivers/spark-sql-kafka-0-10_2.12-3.2.0.jar") \
+    #     .config("spark.executor.extraClassPath", "/opt/spark-apps/drivers/spark-sql-kafka-0-10_2.12-3.2.0.jar") \
+    #     .master("spark://spark-master:7077") \
+    #     .getOrCreate()
+
     spark = SparkSession.builder \
-        .appName("mongo consumer") \
-        .config("spark.streaming.stopGracefullyOnShutdown", "true") \
-        .config("spark.sql.shuffle.partitions", "2") \
-        .config("spark.jars", "opt/spark-apps/drivers/spark-sql-kafka-0-10_2.12-3.2.0.jar,opt/spark-apps/drivers/spark-token-provider-kafka-0-10_2.12-3.2.0.jar") \
-        .config("spark.driver.extraClassPath", "/opt/spark-apps/drivers/spark-sql-kafka-0-10_2.12-3.2.0.jar") \
-        .config("spark.executor.extraClassPath", "/opt/spark-apps/drivers/spark-sql-kafka-0-10_2.12-3.2.0.jar") \
+        .appName("KafkaSparkConsumer") \
         .master("spark://spark-master:7077") \
         .getOrCreate()
 
